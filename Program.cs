@@ -10,6 +10,9 @@ namespace LLL_Grupp_6
     {
         static void Main(string[] args)
         {
+
+
+            //Mikaela
         }
     }
 }
