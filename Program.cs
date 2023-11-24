@@ -14,23 +14,22 @@ namespace LLL_Grupp_6
 
             while (menu)
             {
-                //min meny vissar vad kan vi göra på lagert 
+                //my menu shows what we can do in the Storage
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine("** Stroage menu **");
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("******************************************");
-                Console.WriteLine("1) Inlämning av pallar ");
-                Console.WriteLine("2) Utlämning av pallar ");
-                Console.WriteLine("3) Flyttning av pall ");
-                Console.WriteLine("4) Sökning efter pallar");
-                Console.WriteLine("5) Utskrift av lagerplatser ");
-                Console.WriteLine("6) Avsluta programmet ");
-
+                Console.WriteLine("1) Submission of pallets ");
+                Console.WriteLine("2) Handing out of pallets ");
+                Console.WriteLine("3) Moving of pallet ");
+                Console.WriteLine("4) Search for pallets");
+                Console.WriteLine("5) Printout of storage ");
+                Console.WriteLine("6) Close the program ");
                 Console.WriteLine("******************************************");
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.Write("Välj ett av alternativen , Ange ett nummer :");
+                Console.Write("Choose one of the options, Enter a number:");
 
-                // switch sats kontrolerar vilken alternativ användaren valde 
+                // switch statement checks which option the user chose
                 switch (Console.ReadLine())
                 {
                     case "1":
@@ -51,19 +50,18 @@ namespace LLL_Grupp_6
                         break;
                     case "5":
                         Console.Clear();
-
                         break;
 
                     case "6":
                         Console.Clear();
-                        Console.WriteLine("*********************************************************************************************************");
-                        Console.WriteLine(" Tack så mycket för att använd min program som jag slöaste 20 timmar på och fick lära mig otroligt mycket");
-                        Console.WriteLine("********************************************************************************************************* \n\n\n\n\n\n");
+                        Console.WriteLine("***************************************************************************************************");
+                        Console.WriteLine(" Thank you very much for using my program, which I spent 20 hours on, and I learned incredibly much.");
+                        Console.WriteLine("*************************************************************************************************** \n\n\n\n\n\n");
                         menu = false;
                         break;
-                    default:        //default sats om användaren skiv in ogiltigt val 
+                    default:        //default statement if the user enters an invalid choice 
                         Console.Clear();
-                        Console.WriteLine("Ogiltigt val. Försök igen.");
+                        Console.WriteLine("Invalid choice. Try again.");
                         continue;
                 }
             }
