@@ -13,7 +13,7 @@ namespace LLL_Grupp_6
 
         public DatabaseConnection()
         {
-            string connectionString = @"Data Source=.\SQLEXPRESS; Initial Catalog=Ninja-Astronauts-DB; Integrated Security=true; TrustServerCertificate=true;";
+            string connectionString = @"Data Source=KIX-PC\\SQLEXPRESS; Initial Catalog=Ninja-Astronauts-DB; Integrated Security=true; TrustServerCertificate=true;";
             connection = new SqlConnection(connectionString);
         }
 
