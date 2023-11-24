@@ -13,6 +13,8 @@ namespace LLL_Grupp_6
 
 
             //Mikaela
+            //
+            //
         }
     }
 }
