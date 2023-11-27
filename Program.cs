@@ -38,8 +38,7 @@ namespace LLL_Grupp_6
                         Console.Write("Enter Pallet ID: ");
                         int palletId = Convert.ToInt32(Console.ReadLine());
 
-                        Console.Write("Enter Pallet Type: ");
-                        string palletType = Console.ReadLine();
+                        string palletType = PalletType();
 
                         palletManagment.AddPallet(palletId, palletType);
                         break;
@@ -71,6 +70,28 @@ namespace LLL_Grupp_6
                         Console.WriteLine("Invalid choice. Try again.");
                         continue;
                 }
+
+            }
+        }
+        private static string PalletType()
+        {
+            Console.WriteLine("Choose a Pallet Type:");
+            Console.WriteLine("1) Whole (Hel) pallet");
+            Console.WriteLine("2) Half (Halv) pallet");
+
+            string palletTypeChoice = Console.ReadLine();
+
+            switch (palletTypeChoice)
+            {
+                case "1":
+                    return "Hel";
+
+                case "2":
+                    return "Halv";
+
+                default:
+                    Console.WriteLine("Invalid choice for pallet type. Defaulting to Hel (Whole) pallet.");
+                    return "Hel";
             }
         }
     }
