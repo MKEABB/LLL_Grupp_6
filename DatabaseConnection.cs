@@ -7,14 +7,14 @@ namespace LLL_Grupp_6
     {
         private SqlConnection connection; // Connection to the database
         private readonly string connectionString; // Connection string
-        private readonly string masterConnectionString;
+        private readonly string masterConnectionString; // Master connection string for the initialize process
         private readonly string dbName = "Ninja-Astronauts-DB"; // Database name
 
         public DatabaseConnection() // Constructor for the DatabaseConnection class
         {
             masterConnectionString = @"Data Source=.\SQLEXPRESS; Integrated Security=true; TrustServerCertificate=true;";
             connectionString = @"Data Source=.\SQLEXPRESS; Initial Catalog=Ninja-Astronauts-DB; Integrated Security=true; TrustServerCertificate=true;";
-            InitializeDatabase(); // Call this method to ensure the database and tables are set up when the connection is instantiated
+            InitializeDatabase();
             connection = new SqlConnection(connectionString);
         }
 
@@ -24,7 +24,7 @@ namespace LLL_Grupp_6
             {
                 conn.Open();
 
-                // Corrected way to check if the database exists
+                
                 string checkDbQuery = $"SELECT db_id('{dbName}')";
                 using (SqlCommand checkDbCommand = new SqlCommand(checkDbQuery, conn))
                 {
