@@ -15,6 +15,7 @@ namespace LLL_Grupp_6
             InitializeStorageID initializeStorageID = new InitializeStorageID();
             initializeStorageID.initializeStorageID();
             PalletManagment palletManagment = new PalletManagment();
+            DatabaseConnection dbConnection = new DatabaseConnection();
             bool menu = true;
 
             while (menu)
