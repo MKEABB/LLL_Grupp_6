@@ -52,7 +52,7 @@ namespace LLL_Grupp_6
                         break;
                     case "4":
                         Console.Clear();
-
+                        PalletManagment.RetrievePallet(211);
                         break;
                     case "5":
                         Console.Clear();
