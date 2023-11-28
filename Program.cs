@@ -11,9 +11,15 @@ namespace LLL_Grupp_6
     {
         static void Main(string[] args)
         {
+            
 
             InitializeStorageID initializeStorageID = new InitializeStorageID();
             initializeStorageID.initializeStorageID();
+
+            InitializePall initializePall = new InitializePall();
+            initializePall.initializePall();
+
+
             PalletManagment palletManagment = new PalletManagment();
             bool menu = true;
 
@@ -47,7 +53,7 @@ namespace LLL_Grupp_6
                         string palletType = PalletType();
 
                         AddPallet addPallet = new AddPallet();
-                               addPallet.addPallet(palletId,palletType);
+                               addPallet.addPallet(palletId,palletType,DateTime.Now);
                         break;
                     case "2":
                         Console.Clear();

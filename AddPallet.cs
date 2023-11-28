@@ -29,7 +29,7 @@ namespace LLL_Grupp_6
             dbConnection = new DatabaseConnection();
         }
 
-        public void addPallet(int palletID, string palletType)
+        public void addPallet(int palletID, string palletType, DateTime ArrivalTime)
         {
             try
             {
@@ -44,13 +44,13 @@ namespace LLL_Grupp_6
                 {
 
                     // Insert pallet information
-                    InsertPallet(dbConnection.GetConnection(), palletID, palletType);
+                    InsertPallet(dbConnection.GetConnection(), palletID, palletType, ArrivalTime);
                     // Update storage places
                     UpdateStorage(dbConnection.GetConnection(), AvailableStorage.StorageID, palletID, palletType);
 
 
 
-                    Console.WriteLine($"The pallet has been added to the storage location {AvailableStorage.StorageID}.");
+                    Console.WriteLine($"The pallet {palletID} has been added to the storage location {AvailableStorage.StorageID}.");
                 }
                 else
                 {
@@ -127,16 +127,20 @@ namespace LLL_Grupp_6
             }
         }
 
-        private void InsertPallet(SqlConnection connection, int palletID, string palletType)
+        private void InsertPallet(SqlConnection connection, int palletID, string palletType, DateTime ArrivalTime)
         {
             
+
+
+
             string insertQuery = "INSERT INTO Pallet ( PalletID,PalletType, ArrivalTime) " +
-                                 "VALUES (@PalletID,@PalletType, GETDATE())";
+                                 "VALUES (@PalletID,@PalletType, @ArrivalTime)";
 
             using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
             {
                 insertCommand.Parameters.AddWithValue("@PalletID", palletID);
                 insertCommand.Parameters.AddWithValue("@PalletType", palletType);
+                insertCommand.Parameters.AddWithValue("@ArrivalTime", ArrivalTime);
 
                 insertCommand.ExecuteNonQuery();
             }

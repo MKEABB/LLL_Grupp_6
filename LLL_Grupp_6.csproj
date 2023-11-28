@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="AddPallet.cs" />
     <Compile Include="DatabaseConnection.cs" />
+    <Compile Include="InitializePall.cs" />
     <Compile Include="InitializeStorageID.cs" />
     <Compile Include="PalletManagment.cs" />
     <Compile Include="Program.cs" />
