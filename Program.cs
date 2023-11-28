@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,9 @@ namespace LLL_Grupp_6
     {
         static void Main(string[] args)
         {
+
+            InitializeStorageID initializeStorageID = new InitializeStorageID();
+            initializeStorageID.initializeStorageID();
             PalletManagment palletManagment = new PalletManagment();
             bool menu = true;
 
@@ -38,10 +42,12 @@ namespace LLL_Grupp_6
                         Console.Write("Enter Pallet ID: ");
                         int palletId = Convert.ToInt32(Console.ReadLine());
 
-                        Console.Write("Enter Pallet Type: ");
-                        string palletType = Console.ReadLine();
 
-                        palletManagment.AddPallet(palletId, palletType);
+
+                        string palletType = PalletType();
+
+                        AddPallet addPallet = new AddPallet();
+                               addPallet.addPallet(palletId,palletType);
                         break;
                     case "2":
                         Console.Clear();
@@ -57,6 +63,7 @@ namespace LLL_Grupp_6
                         break;
                     case "5":
                         Console.Clear();
+                        palletManagment.PrintStorage();
                         break;
 
                     case "6":
@@ -71,6 +78,28 @@ namespace LLL_Grupp_6
                         Console.WriteLine("Invalid choice. Try again.");
                         continue;
                 }
+
+            }
+        }
+        private static string PalletType()
+        {
+            Console.WriteLine("Choose a Pallet Type:");
+            Console.WriteLine("1) Whole (Hel) pallet");
+            Console.WriteLine("2) Half (Halv) pallet");
+
+            string palletTypeChoice = Console.ReadLine();
+
+            switch (palletTypeChoice)
+            {
+                case "1":
+                    return "Hell";
+
+                case "2":
+                    return "Halv";
+
+                default:
+                    Console.WriteLine("Invalid choice for pallet type. Defaulting to Hel (Whole) pallet.");
+                    return "Hell";
             }
         }
     }
