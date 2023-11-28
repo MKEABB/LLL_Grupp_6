@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,9 @@ namespace LLL_Grupp_6
     {
         static void Main(string[] args)
         {
+
+            InitializeStorageID initializeStorageID = new InitializeStorageID();
+            initializeStorageID.initializeStorageID();
             PalletManagment palletManagment = new PalletManagment();
             bool menu = true;
 
@@ -38,9 +42,12 @@ namespace LLL_Grupp_6
                         Console.Write("Enter Pallet ID: ");
                         int palletId = Convert.ToInt32(Console.ReadLine());
 
+
+
                         string palletType = PalletType();
 
-                        palletManagment.AddPallet(palletId, palletType);
+                        AddPallet addPallet = new AddPallet();
+                               addPallet.addPallet(palletId,palletType);
                         break;
                     case "2":
                         Console.Clear();
@@ -84,14 +91,14 @@ namespace LLL_Grupp_6
             switch (palletTypeChoice)
             {
                 case "1":
-                    return "Hel";
+                    return "Hell";
 
                 case "2":
                     return "Halv";
 
                 default:
                     Console.WriteLine("Invalid choice for pallet type. Defaulting to Hel (Whole) pallet.");
-                    return "Hel";
+                    return "Hell";
             }
         }
     }
