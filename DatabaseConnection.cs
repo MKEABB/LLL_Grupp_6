@@ -11,38 +11,42 @@ namespace LLL_Grupp_6
 
         public DatabaseConnection() // Constructor for the DatabaseConnection class
         {
-            connectionString = @"Data Source=.\SQLEXPRESS; Integrated Security=true; TrustServerCertificate=true;";
+            connectionString = @"Data Source=.\SQLEXPRESS; Initial Catalog=Ninja-Astronauts-DB; Integrated Security=true; TrustServerCertificate=true;";
             connection = new SqlConnection(connectionString);
 
             InitializeDatabase(); // Call this method to ensure the database and tables are set up when the connection is instantiated
         }
 
-        private void InitializeDatabase() // Method for initializing the database and tables
+        private void InitializeDatabase()
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
 
-                
-                string checkDbQuery = $"SELECT db_id('{dbName}')"; // SQL query to check if the database exists or not (returns NULL if it doesn't exist)
+                // Corrected way to check if the database exists
+                string checkDbQuery = $"SELECT db_id('{dbName}')";
                 using (SqlCommand checkDbCommand = new SqlCommand(checkDbQuery, conn))
                 {
-                    if (checkDbCommand.ExecuteScalar() == DBNull.Value) // If the database doesn't exist, create it
+                    if (checkDbCommand.ExecuteScalar() == DBNull.Value)
                     {
+                        // Switch to the 'master' database to create a new database
+                        conn.ChangeDatabase("master");
+
                         // Create database
-                        string createDbQuery = $"CREATE DATABASE {dbName}";
+                        string createDbQuery = $"CREATE DATABASE [{dbName}]";
                         using (SqlCommand createDbCommand = new SqlCommand(createDbQuery, conn))
                         {
                             createDbCommand.ExecuteNonQuery();
                         }
 
                         // Create tables
-                        conn.ChangeDatabase(dbName); // Change to the newly created database
-                        CreateTables(conn); // Call method for creating the tables
+                        conn.ChangeDatabase(dbName);
+                        CreateTables(conn);
                     }
                 }
             }
         }
+
         private void CreateTables(SqlConnection conn) // Method for creating the tables in the database
         {
             // SQL command to create Pallet table

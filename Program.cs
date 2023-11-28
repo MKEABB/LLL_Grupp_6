@@ -11,11 +11,10 @@ namespace LLL_Grupp_6
     {
         static void Main(string[] args)
         {
-
+            DatabaseConnection dbConnection = new DatabaseConnection();
             InitializeStorageID initializeStorageID = new InitializeStorageID();
             initializeStorageID.initializeStorageID();
             PalletManagment palletManagment = new PalletManagment();
-            DatabaseConnection dbConnection = new DatabaseConnection();
             bool menu = true;
 
             while (menu)
