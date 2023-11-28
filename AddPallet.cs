@@ -69,43 +69,34 @@ namespace LLL_Grupp_6
 
         private static Storage FindAvailableStorage(SqlConnection connection, string palletType)
         {
-
             for (int storageId = 1; storageId <= 20; storageId++)
             {
-                // Check if the storage place is available based on the provided palletType
-                if (IsStorageAvailable(connection, storageId, palletType))
-                {
-                    Storage availableStorage = new Storage
-                    {
-                        StorageID = storageId,
-                        ShelfID1 = null,
-                        ShelfID2 = null
-                    };
+                string query = "SELECT 1 FROM Storage WHERE StorageID = @StorageID " +
+                               "AND ((@PalletType = 'Hell' AND ShelfID1 IS NULL AND ShelfID2 IS NULL) OR " +
+                               "(@PalletType = 'Halv' AND (ShelfID1 IS NULL OR ShelfID2 IS NULL)))";
 
-                    return availableStorage;
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@StorageID", storageId);
+                    command.Parameters.AddWithValue("@PalletType", palletType);
+
+                    object result = command.ExecuteScalar();
+
+                    if (result != null && Convert.ToInt32(result) == 1)
+                    {
+                        Storage availableStorage = new Storage
+                        {
+                            StorageID = storageId,
+                            ShelfID1 = null,
+                            ShelfID2 = null
+                        };
+
+                        return availableStorage;
+                    }
                 }
             }
 
             return null; // No available place found
-        }
-
-        private static bool IsStorageAvailable(SqlConnection connection, int storageId, string palletType)
-        {
-            string query = "SELECT 1 FROM Storage WHERE StorageID = @StorageID " +
-                           "AND ((@PalletType = 'Hell' AND ShelfID1 IS NULL AND ShelfID2 IS NULL) OR " +
-                           "(@PalletType = 'Halv' AND (ShelfID1 IS NULL OR ShelfID2 IS NULL)))";
-
-            using (SqlCommand command = new SqlCommand(query, connection))
-            {
-                command.Parameters.AddWithValue("@StorageID", storageId);
-                command.Parameters.AddWithValue("@PalletType", palletType);
-
-                object result = command.ExecuteScalar();
-
-
-                return result != null && Convert.ToInt32(result) == 1;
-
-            }
         }
 
         private void UpdateStorage(SqlConnection connection, int StorageID, int palletID, string palletType)
