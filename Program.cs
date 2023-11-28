@@ -63,6 +63,7 @@ namespace LLL_Grupp_6
                         break;
                     case "5":
                         Console.Clear();
+                        palletManagment.PrintStorage();
                         break;
 
                     case "6":
