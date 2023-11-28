@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
+using System.IO;
 
 namespace LLL_Grupp_6
 {
@@ -16,29 +17,35 @@ namespace LLL_Grupp_6
             dbConnection = new DatabaseConnection();
         }
 
-        public void AddPallet(int palletId, string palletType) // Adds a pallet to the database with the specified ID and type.
-        {
-            try
-            {
-                dbConnection.OpenConnection();
-                string query = "INSERT INTO Pallet (PalletID, PalletType, ArrivalTime) VALUES (@PalletID, @PalletType, GETDATE())";
+        //public void AddPallet(int palletId,string palletType) // Adds a pallet to the database with the specified ID and type.
+        //{
+        //    try
+        //    {
 
-                using (var command = new SqlCommand(query, dbConnection.GetConnection()))
-                {
-                    command.Parameters.AddWithValue("@PalletID", palletId);
-                    command.Parameters.AddWithValue("@PalletType", palletType);
-                    command.ExecuteNonQuery();
-                }
-            }
-            catch (SqlException e)
-            {
-                Console.WriteLine("Error adding pallet: " + e.Message);
-            }
-            finally
-            {
-                dbConnection.CloseConnection();
-            }
-        }
+
+        //        dbConnection.OpenConnection();
+
+        //        int storageID = AvailableStorage();
+
+        //        string query = "INSERT INTO Pallet (PalletType, ArrivalTime) VALUES (@PalletType, GETDATE())";
+
+        //        using (var command = new SqlCommand(query, dbConnection.GetConnection()))
+        //        {
+        //            command.Parameters.AddWithValue("@PalletID", palletId);
+        //            command.Parameters.AddWithValue("@PalletType", palletType);
+        //            command.ExecuteNonQuery();
+        //        }
+                
+        //    }
+        //    catch (SqlException e)
+        //    {
+        //        Console.WriteLine("Error adding pallet: " + e.Message);
+        //    }
+        //    finally
+        //    {
+        //        dbConnection.CloseConnection();
+        //    }
+        //}
         public void RetrievePallet(int palletId) // Fetches and displays the information of a specific pallet based on its ID.
         {
             try
@@ -80,6 +87,10 @@ namespace LLL_Grupp_6
             try
             {
                 dbConnection.OpenConnection();
+
+               
+
+
                 string query = "DELETE FROM Pallet WHERE PalletID = @PalletID";
 
                 using (SqlCommand command = new SqlCommand(query, dbConnection.GetConnection()))
@@ -106,5 +117,9 @@ namespace LLL_Grupp_6
                 dbConnection.CloseConnection();
             }
         }
+
+        
+
+        
     }
 }

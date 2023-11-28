@@ -43,7 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddPallet.cs" />
     <Compile Include="DatabaseConnection.cs" />
+    <Compile Include="InitializeStorageID.cs" />
     <Compile Include="PalletManagment.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
