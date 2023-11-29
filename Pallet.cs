@@ -10,61 +10,101 @@ namespace LLL_Grupp_6
     internal class Pallet
     {
 
-        public static void Move()
+        public static void Move(Tuple<int, string, DateTime, int> retrievedPallet)
         {
-            //vvHur kallar jag på dataconnection och bara får stringen. 
+            //Ändra
             string connectionString = @"Data Source=.\SQLEXPRESS; Initial Catalog=LundsNyaLånglager; Integrated Security=true; TrustServerCertificate=true;";
 
+            bool gotCapacity = false;
             int newStorageID = -1;
-            var searchedTuple = PalletManagment.RetrievePallet(112);
-            Console.WriteLine("TEST: Item 1:{0}, item 2:{1}, item 3:{2}, item 4:{3}",
-                              searchedTuple.Item1, searchedTuple.Item2, searchedTuple.Item3, searchedTuple.Item4);
+
 
             while (newStorageID > 20 || newStorageID < 0)                                       //Om inte den nya pallplatsen är inom 0-20 tar den in ny indata
             {
-                UserInput.Int($"Move pallet from {searchedTuple.Item4} to ", ref newStorageID);
+                UserInput.Int($"Move pallet from {retrievedPallet.Item4} to ", ref newStorageID);
             }
-            int firstAvalible = Storage.GotHalfPalletCapacity();
 
-            if (searchedTuple.Item2 == "HALV" && firstAvalible >= 0) //Palltypen är halv och första tillgängliga platsen är större eller likamed noll
+
+            if (retrievedPallet.Item2 == "HALV") //Palltypen är halv och metoden som kollar att det finns tillgängliga platser returnear true.
             {
-                string moveInsertQuery = "INSERT INTO Pallet (PalletID, PalletType, ArrivalTime)\r\n" +
-                                         "VALUES (@PalletID, @PalletType, @ArrivalTime);" +
-                                         "INSERT INTO Storage (StorageID, ShelfID1, ShelfID2)\r\n" +
-                                         "VALUES (" +
-                                         "CASE WHEN ShelfID1 IS NULL THEN @ShelfID ELSE ShelfID1 END, " +
-                                         "CASE WHEN ShelfID1 IS NOT NULL THEN @ShelfID ELSE ShelfID2 END)";
+                gotCapacity = Storage.GotHalfPalletCapacity(newStorageID);
 
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                if (gotCapacity == true)
                 {
-                    //QSTRING + CONNECTION = COMMAND
-                    SqlCommand command = new SqlCommand(moveInsertQuery, connection);
+                    string deleteUpdateQuery = "UPDATE Storage " +
+                                    "SET ShelfID1 = NULL, ShelfID2 = NULL " +
+                                    "WHERE ShelfID1 = @PreviousPID OR ShelfID2 = @PreviousPID;";
 
-                    //ÖPPNA CONNECTION
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
+                    string moveInsertQuery = "UPDATE Storage " +
+                                             "SET ShelfID1 = CASE WHEN ShelfID1 IS NULL THEN @PalletID ELSE ShelfID1 END, " +
+                                             "ShelfID2 = CASE WHEN ShelfID1 IS NOT NULL THEN @PalletID ELSE ShelfID2 END " +
+                                             "WHERE StorageID = @StorageID;";
 
-                    command.Parameters.AddWithValue("@PalletID", searchedTuple.Item1);
-                    command.Parameters.AddWithValue("@PalletType", searchedTuple.Item2);
-                    command.Parameters.AddWithValue("@ArrivalTime", searchedTuple.Item3);
-                    command.Parameters.AddWithValue("@StorageID", firstAvalible);
-                    command.Parameters.AddWithValue("@ShelfID1"), 
-                    command.Parameters.AddWithValue("@ShelfID2"), 
-                    
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        connection.Open();
+
+                        // Nullar
+                        using (SqlCommand deleteCommand = new SqlCommand(deleteUpdateQuery, connection))
+                        {
+                            deleteCommand.Parameters.AddWithValue("@PreviousPID", retrievedPallet.Item1);
+                            deleteCommand.ExecuteNonQuery();
+                        }
+
+                        // Nya värden
+                        using (SqlCommand moveCommand = new SqlCommand(moveInsertQuery, connection))
+                        {
+                            moveCommand.Parameters.AddWithValue("@StorageID", newStorageID);
+                            moveCommand.Parameters.AddWithValue("@PalletID", retrievedPallet.Item1);
+                            moveCommand.ExecuteNonQuery();
+                        }
+
+                        Console.WriteLine("Pallet moved successfully");
+
+                    }
+                }
+            }
+            else if (retrievedPallet.Item2 == "HEL")
+            {
+                gotCapacity = Storage.GotFullPalletCapacity(newStorageID);
+
+                if (gotCapacity == true)
+                {
+                    string deleteUpdateQuery = "UPDATE Storage " +
+                                   "SET ShelfID1 = NULL, ShelfID2 = NULL " +
+                                   "WHERE ShelfID1 = @PreviousPID OR ShelfID2 = @PreviousPID;";
+
+                    string moveInsertQuery = "UPDATE Storage " +
+                                             "SET ShelfID1 = COALESCE(ShelfID1, @PalletID)," +
+                                             "ShelfID2 = COALESCE(ShelfID2, @PalletID)" +
+                                             "WHERE StorageID = @StorageID; ";
 
 
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
 
+                        connection.Open();
+
+                        // Nullar
+                        using (SqlCommand deleteCommand = new SqlCommand(deleteUpdateQuery, connection))
+                        {
+                            deleteCommand.Parameters.AddWithValue("@PreviousPID", retrievedPallet.Item1);
+                            deleteCommand.ExecuteNonQuery();
+                        }
+                        //Nya värden
+                        SqlCommand command = new SqlCommand(moveInsertQuery, connection);
+                        command.Parameters.AddWithValue("@StorageID", newStorageID);
+                        command.Parameters.AddWithValue("@PalletID", retrievedPallet.Item1);
+                        SqlDataReader reader = command.ExecuteReader();
+
+                    }
 
                 }
 
-
-
-                // skriv över med null på den gamla platsen 
             }
-            else if (searchedTuple.Item2 == "HEL")
+            else
             {
-                string fullPalletQuery = "SELECT TOP 1 StorageID FROM Storage" +
-                                         "WHERE ShelfID1 IS NULL AND ShelfID2 IS NULL";
+
                 //Lediga helpallsplatser visas
                 // informationen blir inserted
                 // skriv över med null på de gamla platserna 

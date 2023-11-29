@@ -48,11 +48,11 @@ namespace LLL_Grupp_6
                         break;
                     case "3":
                         Console.Clear();
-
+                        Pallet.Move(PalletManagment.RetrievePallet(444));
                         break;
                     case "4":
                         Console.Clear();
-                        PalletManagment.RetrievePallet(211);
+                        PalletManagment.RetrievePallet(222);
                         break;
                     case "5":
                         Console.Clear();
