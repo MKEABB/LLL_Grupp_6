@@ -5,13 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq.Expressions;
 
 namespace LLL_Grupp_6
 {
     public class PalletManagment
     {
         private DatabaseConnection dbConnection;
-
+        private const int WholePalletRate = 80; // The rate for a whole pallet is 80 SEK per hour.
+        private const int HalfPalletRate = 40; // The rate for a half pallet is 40 SEK per hour.
         public PalletManagment()
         {
             dbConnection = new DatabaseConnection();
@@ -65,5 +67,58 @@ namespace LLL_Grupp_6
             }
             return palletTuple;
         } 
+
+        public void DeletePallet(int palletId)
+        {
+            try
+            {
+                dbConnection.OpenConnection();
+
+                // First, retrieve the pallet info (including ArrivalTime and PalletType) for calculating cost.
+                string retrieveQuery = "SELECT PalletType, ArrivalTime FROM Pallet WHERE PalletID = @PalletID";
+                SqlCommand retrieveCommand = new SqlCommand(retrieveQuery, dbConnection.GetConnection());
+                retrieveCommand.Parameters.AddWithValue("@PalletID", palletId);
+                SqlDataReader reader = retrieveCommand.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    string palletType = reader["PalletType"].ToString();
+                    DateTime arrivalTime = Convert.ToDateTime(reader["ArrivalTime"]);
+                    reader.Close();
+
+                    // Calculate the cost.
+                    TimeSpan timeSpan = DateTime.Now - arrivalTime;
+                    int rate = (palletType == "Whole") ? WholePalletRate : HalfPalletRate;
+                    double cost = duration.TotalHours * rate;
+
+                    // Display the cost.
+                    Console.WriteLine($"Total cost for PalletID {palletId}: {cost} kr");
+
+                    // Delete the pallet from the database.
+                    string deleteQuery = "DELETE FROM Pallet WHERE PalletID = @PalletID";
+                    SqlCommand deleteCommand = new SqlCommand(deleteQuery, dbConnection.GetConnection());
+                    deleteCommand.Parameters.AddWithValue("@PalletID", palletId);
+                    deleteCommand.ExecuteNonQuery();
+
+                    // Update the storage.
+                    string updateStorageQuery = "UPDATE Storage SET ShelfID1 = NULL WHERE ShelfID1 = @PalletID; UPDATE Storage SET ShelfID2 = NULL WHERE ShelfID2 = @PalletID";
+                    SqlCommand updateStorageCommand = new SqlCommand(updateStorageQuery, dbConnection.GetConnection());
+                    updateStorageCommand.Parameters.AddWithValue("@PalletID", palletId);
+                    updateStorageCommand.ExecuteNonQuery();
+                }
+                else
+                {
+                    Console.WriteLine("Pallet not found.");
+                }
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine("Error deleting pallet: " + e.Message);
+            }
+            finally
+            {
+                dbConnection.CloseConnection();
+            }
+        }
     }
 }
