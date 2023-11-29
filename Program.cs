@@ -57,6 +57,9 @@ namespace LLL_Grupp_6
                         break;
                     case "2":
                         Console.Clear();
+                        Console.Write("Write PalletID to delete: ");
+                        int palletID = Convert.ToInt32(Console.ReadLine());
+                        palletManagment.DeletePallet(palletID);
 
                         break;
                     case "3":

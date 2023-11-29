@@ -59,7 +59,7 @@ namespace LLL_Grupp_6
             }
             else
             {
-                // Console.WriteLine($"Cannot add more pallets of type {palletType}. Maximum limit reached.");
+                // Console.WriteLine($"Pallets already exist. No need for initialization .");
             }
         }
 
