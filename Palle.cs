@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LLL_Grupp_6
 {
-    internal class Pallet
+    internal class Palle
     {
 
         public static void Move(Tuple<int, string, DateTime, int> retrievedPallet)

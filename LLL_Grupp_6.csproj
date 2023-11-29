@@ -47,7 +47,7 @@
     <Compile Include="DatabaseConnection.cs" />
     <Compile Include="InitializePall.cs" />
     <Compile Include="InitializeStorageID.cs" />
-    <Compile Include="Pallet.cs" />
+    <Compile Include="Palle.cs" />
     <Compile Include="PalletManagment.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
