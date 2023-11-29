@@ -87,7 +87,7 @@ namespace LLL_Grupp_6
                     reader.Close();
 
                     // Calculate the cost.
-                    TimeSpan timeSpan = DateTime.Now - arrivalTime;
+                    TimeSpan duration = DateTime.Now - arrivalTime;
                     int rate = (palletType == "Whole") ? WholePalletRate : HalfPalletRate;
                     double cost = duration.TotalHours * rate;
 
