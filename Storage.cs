@@ -12,7 +12,7 @@ namespace LLL_Grupp_6
     {
         public static bool GotHalfPalletCapacity(int newStorageID)
         {
-            string connectionString = @"Data Source=.\SQLEXPRESS; Initial Catalog=LundsNyaLånglager; Integrated Security=true; TrustServerCertificate=true;";
+            string connectionString = @"Data Source=.\SQLEXPRESS; Initial Catalog=Ninja-Astronauts-DB; Integrated Security=true; TrustServerCertificate=true;";
 
             // Returnerar en ledig plats om det finns en
             string halfPalletQuery = "SELECT TOP 1 StorageID FROM Storage WHERE StorageID = @StorageID " +
@@ -40,7 +40,7 @@ namespace LLL_Grupp_6
         }
         public static bool GotFullPalletCapacity(int newStorageID)
         {
-            string connectionString = @"Data Source=.\SQLEXPRESS; Initial Catalog=LundsNyaLånglager; Integrated Security=true; TrustServerCertificate=true;";
+            string connectionString = @"Data Source=.\SQLEXPRESS; Initial Catalog=Ninja-Astronauts-DB; Integrated Security=true; TrustServerCertificate=true;";
 
             // Returnerar en ledig plats om det finns en
             string halfPalletQuery = "SELECT TOP 1 StorageID FROM Storage WHERE StorageID = @StorageID " +

@@ -64,7 +64,7 @@ namespace LLL_Grupp_6
                         break;
                     case "3":
                         Console.Clear();
-
+                        Palle.Move(palletManagment.RetrievePallet(5));
                         break;
                     case "4":
                         Console.Clear();

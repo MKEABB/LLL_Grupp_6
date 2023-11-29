@@ -13,7 +13,7 @@ namespace LLL_Grupp_6
         public static void Move(Tuple<int, string, DateTime, int> retrievedPallet)
         {
             //Ändra
-            string connectionString = @"Data Source=.\SQLEXPRESS; Initial Catalog=LundsNyaLånglager; Integrated Security=true; TrustServerCertificate=true;";
+            string connectionString = @"Data Source=.\SQLEXPRESS; Initial Catalog=Ninja-Astronauts-DB; Integrated Security=true; TrustServerCertificate=true;";
 
             bool gotCapacity = false;
             int newStorageID = -1;
