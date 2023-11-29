@@ -72,8 +72,8 @@ namespace LLL_Grupp_6
             for (int storageId = 1; storageId <= 20; storageId++)
             {
                 string query = "SELECT 1 FROM Storage WHERE StorageID = @StorageID " +
-                               "AND ((@PalletType = 'Hell' AND ShelfID1 IS NULL AND ShelfID2 IS NULL) OR " +
-                               "(@PalletType = 'Halv' AND (ShelfID1 IS NULL OR ShelfID2 IS NULL)))";
+                               "AND ((@PalletType = 'Whole' AND ShelfID1 IS NULL AND ShelfID2 IS NULL) OR " +
+                               "(@PalletType = 'Half' AND (ShelfID1 IS NULL OR ShelfID2 IS NULL)))";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -103,11 +103,11 @@ namespace LLL_Grupp_6
         {
             string updateQuery = "UPDATE Storage SET ";
 
-            if (palletType == "Hell")
+            if (palletType == "Whole")
             {
                 updateQuery += "ShelfID1 = @PalletID, ShelfID2 = @PalletID ";
             }
-            else if (palletType == "Halv")
+            else if (palletType == "Half")
             {
                 // Choose either ShelfID1 or ShelfID2 based on availability
                 updateQuery += "ShelfID1 = CASE WHEN ShelfID1 IS NULL THEN @PalletID ELSE ShelfID1 END, " +

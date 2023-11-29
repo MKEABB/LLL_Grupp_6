@@ -57,7 +57,6 @@ namespace LLL_Grupp_6
                         break;
                     case "2":
                         Console.Clear();
-                        Console.Clear();
                         Console.Write("Write PalletID to delete: ");
                         int palletID = Convert.ToInt32(Console.ReadLine());
                         palletManagment.DeletePallet(palletID);
@@ -65,7 +64,7 @@ namespace LLL_Grupp_6
                         break;
                     case "3":
                         Console.Clear();
-
+                        Palle.Move(palletManagment.RetrievePallet(5));
                         break;
                     case "4":
                         Console.Clear();
@@ -102,14 +101,14 @@ namespace LLL_Grupp_6
             switch (palletTypeChoice)
             {
                 case "1":
-                    return "Hell";
+                    return "Whole";
 
                 case "2":
-                    return "Halv";
+                    return "Half";
 
                 default:
                     Console.WriteLine("Invalid choice for pallet type. Defaulting to Hel (Whole) pallet.");
-                    return "Hell";
+                    return "Whole";
             }
         }
     }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.SqlClient;
 
 namespace LLL_Grupp_6
@@ -28,7 +24,7 @@ namespace LLL_Grupp_6
             {
                 conn.Open();
 
-
+                
                 string checkDbQuery = $"SELECT db_id('{dbName}')";
                 using (SqlCommand checkDbCommand = new SqlCommand(checkDbQuery, conn))
                 {

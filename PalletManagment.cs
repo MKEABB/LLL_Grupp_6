@@ -166,15 +166,15 @@ namespace LLL_Grupp_6
                             string arrivalTimeShelfID2 = reader.IsDBNull(6) ? string.Empty : reader.GetString(6);
 
                             // Set color directly based on PalletType for Shelf 1
-                            Console.ForegroundColor = palletType1.ToLower() == "hell" ? ConsoleColor.Green :
-                                              palletType1.ToLower() == "halv" ? ConsoleColor.Yellow : ConsoleColor.Gray;
+                            Console.ForegroundColor = palletType1.ToLower() == "whole" ? ConsoleColor.Green :
+                                              palletType1.ToLower() == "half" ? ConsoleColor.Yellow : ConsoleColor.Gray;
                             Console.Write($"StorageID:{storageId}, Shelf 1: {shelfId1}, Type: {palletType1}, ArrivalTime: {arrivalTimeShelfID1}");
                             Console.ResetColor(); // Reset color to default
                             Console.Write(", ");
 
                             // Set color directly based on PalletType for Shelf 2
-                            Console.ForegroundColor = palletType2.ToLower() == "halv" ? ConsoleColor.Yellow :
-                                              palletType2.ToLower() == "hell" ? ConsoleColor.Green : ConsoleColor.Gray;
+                            Console.ForegroundColor = palletType2.ToLower() == "half" ? ConsoleColor.Yellow :
+                                              palletType2.ToLower() == "whole" ? ConsoleColor.Green : ConsoleColor.Gray;
                             Console.WriteLine($"Shelf 2: {shelfId2}, Type: {palletType2}, ArrivalTime: {arrivalTimeShelfID2}");
                             Console.ResetColor(); // Reset color to default
                         }
@@ -194,7 +194,7 @@ namespace LLL_Grupp_6
         }
 
 
-
-
+       
     }
 }
+
