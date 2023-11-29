@@ -27,7 +27,7 @@ namespace LLL_Grupp_6
 
             if (retrievedPallet.Item2 == "HALV") //Palltypen är halv och metoden som kollar att det finns tillgängliga platser returnear true.
             {
-                gotCapacity = Storage.GotHalfPalletCapacity(newStorageID);
+                gotCapacity = StorageCheck.GotHalfPalletCapacity(newStorageID);
 
                 if (gotCapacity == true)
                 {
@@ -66,7 +66,7 @@ namespace LLL_Grupp_6
             }
             else if (retrievedPallet.Item2 == "HEL")
             {
-                gotCapacity = Storage.GotFullPalletCapacity(newStorageID);
+                gotCapacity = StorageCheck.GotFullPalletCapacity(newStorageID);
 
                 if (gotCapacity == true)
                 {
