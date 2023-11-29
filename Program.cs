@@ -19,6 +19,7 @@ namespace LLL_Grupp_6
             InitializePall initializePall = new InitializePall();
             initializePall.initializePall();
 
+             
 
             PalletManagment palletManagment = new PalletManagment();
             bool menu = true;
@@ -64,7 +65,9 @@ namespace LLL_Grupp_6
                         break;
                     case "3":
                         Console.Clear();
-                        Palle.Move(palletManagment.RetrievePallet(5));
+                        Console.Write("Write PalletID to Move: ");
+                        int palletIDtoMove = Convert.ToInt32(Console.ReadLine());
+                        Palle.Move(palletManagment.RetrievePallet(palletIDtoMove));
                         break;
                     case "4":
                         Console.Clear();

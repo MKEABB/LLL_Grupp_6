@@ -31,9 +31,13 @@ namespace LLL_Grupp_6
 
                 if (gotCapacity == true)
                 {
-                    string deleteUpdateQuery = "UPDATE Storage " +
-                                    "SET ShelfID1 = NULL, ShelfID2 = NULL " +
-                                    "WHERE ShelfID1 = @PreviousPID OR ShelfID2 = @PreviousPID;";
+                    // Hani updated the deleteUpdateQuery
+                    string deleteUpdateQuery = @" UPDATE Storage
+                                                  SET
+                                                   ShelfID1 = CASE WHEN ShelfID1 = @PreviousPID THEN NULL ELSE ShelfID1 END,
+                                                   ShelfID2 = CASE WHEN ShelfID2 = @PreviousPID THEN NULL ELSE ShelfID2 END
+                                                  WHERE
+                                                   ShelfID1 = @PreviousPID OR ShelfID2 = @PreviousPID";
 
                     string moveInsertQuery = "UPDATE Storage " +
                                              "SET ShelfID1 = CASE WHEN ShelfID1 IS NULL THEN @PalletID ELSE ShelfID1 END, " +
