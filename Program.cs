@@ -101,14 +101,14 @@ namespace LLL_Grupp_6
             switch (palletTypeChoice)
             {
                 case "1":
-                    return "Hell";
+                    return "Whole";
 
                 case "2":
-                    return "Halv";
+                    return "Half";
 
                 default:
                     Console.WriteLine("Invalid choice for pallet type. Defaulting to Hel (Whole) pallet.");
-                    return "Hell";
+                    return "Whole";
             }
         }
     }

@@ -28,13 +28,13 @@ namespace LLL_Grupp_6
             // Initialize three "Hell" pallets
             for (int i = 1; i <= 3; i++)
             {
-                InitializePallet(addPallet, i, "Hell");
+                InitializePallet(addPallet, i, "Whole");
             }
 
             // Initialize three "Halv" pallets
             for (int i = 4; i <= 6; i++)
             {
-                InitializePallet(addPallet, i, "Halv");
+                InitializePallet(addPallet, i, "Half");
             }
         }
         void InitializePallet(AddPallet addPallet, int palletID, string palletType)
