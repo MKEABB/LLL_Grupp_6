@@ -5,21 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LLL_Grupp_6
+namespace LLL_Grupp_6    //Hani Haj Hamdo 
 {
-
+    // Pallet class to represent pallet information
     public class Pallet
     {
         public int PalletID { get; set; }
         public string PalletType { get; set; }
         public DateTime ArrivalTime { get; set; }
     }
+    // Storage class to represent storage information
     public class Storage
     {
         public int StorageID { get; set; }
         public int? ShelfID1 { get; set; }
         public int? ShelfID2 { get; set; }
     }
+    // Class responsible for adding pallets to storage
     public class AddPallet
     {
         private DatabaseConnection dbConnection;
@@ -29,6 +31,7 @@ namespace LLL_Grupp_6
             dbConnection = new DatabaseConnection();
         }
 
+        // Method to add a pallet to storage
         public void addPallet(int palletID, string palletType, DateTime ArrivalTime)
         {
             try
@@ -66,7 +69,7 @@ namespace LLL_Grupp_6
                 dbConnection.CloseConnection();
             }
         }
-
+        // Method to find an available storage place based on pallet type
         private static Storage FindAvailableStorage(SqlConnection connection, string palletType)
         {
             for (int storageId = 1; storageId <= 20; storageId++)
@@ -95,10 +98,11 @@ namespace LLL_Grupp_6
                     }
                 }
             }
-
-            return null; // No available place found
+            // No available place found
+            return null; 
         }
 
+        // Method to update storage information after adding a pallet
         private void UpdateStorage(SqlConnection connection, int StorageID, int palletID, string palletType)
         {
             string updateQuery = "UPDATE Storage SET ";
@@ -126,7 +130,7 @@ namespace LLL_Grupp_6
                 updateCommand.ExecuteNonQuery();
             }
         }
-
+        // Method to insert pallet information into the database
         private void InsertPallet(SqlConnection connection, int palletID, string palletType, DateTime ArrivalTime)
         {
             

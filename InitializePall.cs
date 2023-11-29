@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LLL_Grupp_6
+namespace LLL_Grupp_6    // Hani Haj Hamdo
 {
     public class InitializePall
     {
@@ -47,7 +47,7 @@ namespace LLL_Grupp_6
                 InitializePallet(addPallet, currentWholePalletCount + i, "Whole");
             }
 
-           
+
         }
         void InitializePallet(AddPallet addPallet, int palletID, string palletType)
         {
@@ -64,36 +64,47 @@ namespace LLL_Grupp_6
             // Generate a random time within the specified range
             DateTime randomTime = startDate + TimeSpan.FromTicks((long)(random.NextDouble() * (endDate - startDate).Ticks));
 
-            
-                // Call the addPallet method to add the pallet to storage
-                addPallet.addPallet(palletID, palletType, randomTime);
-         
-        }
 
+            // Call the addPallet method to add the pallet to storage
+            addPallet.addPallet(palletID, palletType, randomTime);
+
+        }
+        // Method to check the count of pallets with a specific type
         int PalletExist(string palletType)
         {
             int palletCount = 0;
+            // SQL query to count pallets of a specific type
             string query = "SELECT COUNT(*) FROM Pallet WHERE PalletType = @PalletType";
 
 
             using (SqlCommand command = new SqlCommand(query, dbConnection.GetConnection()))
             {
+                // Adding parameter to the SQL command
                 command.Parameters.AddWithValue("@PalletType", palletType);
+
+                // Executing the query and retrieving the count
                 palletCount = (int)command.ExecuteScalar();
             }
 
-
+            // Returning the count of pallets with the specified type
             return palletCount;
         }
+        // Method to check if a pallet with a specific ID exists
         bool PalletIDExists(int palletID)
         {
+            // SQL query to count pallets with a specific ID
             string query = "SELECT COUNT(*) FROM Pallet WHERE PalletID = @PalletID";
 
+            // Using statement ensures proper resource disposal
             using (SqlCommand command = new SqlCommand(query, dbConnection.GetConnection()))
             {
+                // Adding parameter to the SQL command
                 command.Parameters.AddWithValue("@PalletID", palletID);
+
+                // Executing the query and retrieving the count
                 int palletCount = (int)command.ExecuteScalar();
 
+                // Returning whether a pallet with the specified ID exists
                 return palletCount > 0;
             }
         }
