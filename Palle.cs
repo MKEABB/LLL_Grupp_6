@@ -25,26 +25,26 @@ namespace LLL_Grupp_6
             }
 
 
-            if (retrievedPallet.Item2 == "Half") //Palltypen är halv och metoden som kollar att det finns tillgängliga platser returnear true.
+            if (retrievedPallet.Item2 == "Half")                                                //Palltypen är halv 
             {
-                gotCapacity = StorageCheck.GotHalfPalletCapacity(newStorageID);
+                gotCapacity = StorageCheck.GotHalfPalletCapacity(newStorageID);                 //Kollar om sökt StorageID har minst en ledig halvplats.
 
                 if (gotCapacity == true)
                 {
-                    string deleteUpdateQuery = "UPDATE Storage " +
-                                    "SET ShelfID1 = NULL, ShelfID2 = NULL " +
-                                    "WHERE ShelfID1 = @PreviousPID OR ShelfID2 = @PreviousPID;";
+                    string deleteUpdateQuery = "UPDATE Storage " +  
+                                               "SET ShelfID1 = NULL, ShelfID2 = NULL " +
+                                               "WHERE ShelfID1 = @PreviousPID OR ShelfID2 = @PreviousPID;";
 
-                    string moveInsertQuery = "UPDATE Storage " +
-                                             "SET ShelfID1 = CASE WHEN ShelfID1 IS NULL THEN @PalletID ELSE ShelfID1 END, " +
-                                             "ShelfID2 = CASE WHEN ShelfID1 IS NOT NULL THEN @PalletID ELSE ShelfID2 END " +
-                                             "WHERE StorageID = @StorageID;";
+                    string moveInsertQuery = "UPDATE Storage " +                                //Ändrar shelfID 1/2 till nytt id beroende på om den är null eller inte. 
+                                             "SET ShelfID1 = CASE WHEN ShelfID1 IS NULL THEN @PalletID ELSE ShelfID1 END, " + //Om den inte är null är värdet kvar 
+                                             "ShelfID2 = CASE WHEN ShelfID1 IS NOT NULL THEN @PalletID ELSE ShelfID2 END " +  //Alltså väljs vilken av de två halvpalls-
+                                             "WHERE StorageID = @StorageID;";                                                 //platserna den ska vara på automatiskt.
 
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
                         connection.Open();
 
-                        // Nullar
+                        // Skriver över med null på tidigare plats
                         using (SqlCommand deleteCommand = new SqlCommand(deleteUpdateQuery, connection))
                         {
                             deleteCommand.Parameters.AddWithValue("@PreviousPID", retrievedPallet.Item1);
@@ -64,17 +64,17 @@ namespace LLL_Grupp_6
                     }
                 }
             }
-            else if (retrievedPallet.Item2 == "Whole")
+            else if (retrievedPallet.Item2 == "Whole")                                          //Inmatad pall är en helpall
             {
-                gotCapacity = StorageCheck.GotFullPalletCapacity(newStorageID);
+                gotCapacity = StorageCheck.GotFullPalletCapacity(newStorageID);                 //Metoden för att se om de önskade platserna är lediga.
 
                 if (gotCapacity == true)
                 {
                     string deleteUpdateQuery = "UPDATE Storage " +
-                                   "SET ShelfID1 = NULL, ShelfID2 = NULL " +
-                                   "WHERE ShelfID1 = @PreviousPID OR ShelfID2 = @PreviousPID;";
+                                               "SET ShelfID1 = NULL, ShelfID2 = NULL " +
+                                               "WHERE ShelfID1 = @PreviousPID OR ShelfID2 = @PreviousPID;";
 
-                    string moveInsertQuery = "UPDATE Storage " +
+                    string moveInsertQuery = "UPDATE Storage " +                                //Om ShelfID är null ges ShelfID värdet av den sökta pallen
                                              "SET ShelfID1 = COALESCE(ShelfID1, @PalletID)," +
                                              "ShelfID2 = COALESCE(ShelfID2, @PalletID)" +
                                              "WHERE StorageID = @StorageID; ";
@@ -85,7 +85,7 @@ namespace LLL_Grupp_6
 
                         connection.Open();
 
-                        // Nullar
+                        // Skriver över med null på tidigare platser
                         using (SqlCommand deleteCommand = new SqlCommand(deleteUpdateQuery, connection))
                         {
                             deleteCommand.Parameters.AddWithValue("@PreviousPID", retrievedPallet.Item1);
@@ -96,11 +96,8 @@ namespace LLL_Grupp_6
                         command.Parameters.AddWithValue("@StorageID", newStorageID);
                         command.Parameters.AddWithValue("@PalletID", retrievedPallet.Item1);
                         SqlDataReader reader = command.ExecuteReader();
-
                     }
-
                 }
-
             }
             else
             {
@@ -109,10 +106,6 @@ namespace LLL_Grupp_6
                 // informationen blir inserted
                 // skriv över med null på de gamla platserna 
             }
-
-
-
-
         }
     }
 }

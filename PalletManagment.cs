@@ -37,17 +37,18 @@ namespace LLL_Grupp_6
                     {
                         if (reader.Read())
                         {
-                            Console.WriteLine("Pallet ID: " + reader["PalletID"]);
+                            Console.WriteLine("Pallet ID: " + reader["PalletID"]);  //Skriver ut pallinfon
                             Console.WriteLine("Pallet Type: " + reader["PalletType"]);
                             Console.WriteLine("Arrival Time: " + reader["ArrivalTime"]);
                             Console.WriteLine("StorageID: " + reader["StorageID"]);
 
-                            int tPalletID = Convert.ToInt32(reader["PalletID"]);
+
+                            int tPalletID = Convert.ToInt32(reader["PalletID"]);    //Lägger pallinfon i variabler>
                             string tPalletType = reader["PalletType"].ToString();
                             DateTime tDateTime = reader.GetDateTime(reader.GetOrdinal("ArrivalTime"));
                             int tStorageID = Convert.ToInt32(reader["StorageID"]);
 
-                            palletTuple = new Tuple<int, string, DateTime, int>(
+                            palletTuple = new Tuple<int, string, DateTime, int>(    //>som sedan lagras i en tuple som sedan returneras
                                                     tPalletID, tPalletType, tDateTime, tStorageID);
                         }
                         else
