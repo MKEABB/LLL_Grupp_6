@@ -12,14 +12,14 @@ namespace LLL_Grupp_6
         static void Main(string[] args)
         {
 
-            DatabaseConnection dbConnection = new DatabaseConnection();
+            //DatabaseConnection dbConnection = new DatabaseConnection();
             InitializeStorageID initializeStorageID = new InitializeStorageID();
             initializeStorageID.initializeStorageID();
 
             InitializePall initializePall = new InitializePall();
             initializePall.initializePall();
 
-             
+
 
             PalletManagment palletManagment = new PalletManagment();
             bool menu = true;
@@ -51,10 +51,10 @@ namespace LLL_Grupp_6
 
 
 
-                        string palletType = PalletType();
+                        int palletSize = PalletType();
 
                         AddPallet addPallet = new AddPallet();
-                               addPallet.addPallet(palletId,palletType,DateTime.Now);
+                               addPallet.addPallet(palletId, palletSize,DateTime.Now);
                         break;
                     case "2":
                         Console.Clear();
@@ -71,11 +71,14 @@ namespace LLL_Grupp_6
                         break;
                     case "4":
                         Console.Clear();
-
+                        Console.Write("Write PalletID to Move: ");
+                        int palletIDtoSearch = Convert.ToInt32(Console.ReadLine());
+                        palletManagment.RetrievePallet(palletIDtoSearch);
                         break;
                     case "5":
                         Console.Clear();
-                        palletManagment.PrintStorage();
+                        PrintStorage printStorage = new PrintStorage();
+                        printStorage.printStorage();
                         break;
 
                     case "6":
@@ -93,7 +96,7 @@ namespace LLL_Grupp_6
 
             }
         }
-        private static string PalletType()
+        private static int PalletType()
         {
             Console.WriteLine("Choose a Pallet Type:");
             Console.WriteLine("1) Whole (Hel) pallet");
@@ -104,14 +107,14 @@ namespace LLL_Grupp_6
             switch (palletTypeChoice)
             {
                 case "1":
-                    return "Whole";
+                    return 100;
 
                 case "2":
-                    return "Half";
+                    return 50;
 
                 default:
                     Console.WriteLine("Invalid choice for pallet type. Defaulting to Hel (Whole) pallet.");
-                    return "Whole";
+                    return 100;
             }
         }
     }

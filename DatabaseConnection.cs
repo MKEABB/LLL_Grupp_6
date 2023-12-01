@@ -53,7 +53,7 @@ namespace LLL_Grupp_6
             // SQL command to create Pallet table
             string createPalletTableQuery = @"CREATE TABLE Pallet (
                                                   PalletID INT PRIMARY KEY NOT NULL,
-                                                  PalletType NVARCHAR(10) NOT NULL,
+                                                  PalletSize int NOT NULL,
                                                   ArrivalTime DATETIME NOT NULL
                                               );";
             SqlCommand createPalletTableCommand = new SqlCommand(createPalletTableQuery, conn);
@@ -62,13 +62,24 @@ namespace LLL_Grupp_6
             // SQL command to create Storage table
             string createStorageTableQuery = @"CREATE TABLE Storage (
                                                    StorageID INT PRIMARY KEY NOT NULL,
-                                                   ShelfID1 INT,
-                                                   FOREIGN KEY (ShelfID1) REFERENCES Pallet(PalletID),
-                                                   ShelfID2 INT,
-                                                   FOREIGN KEY (ShelfID2) REFERENCES Pallet(PalletID)
+                                                   Size int
+                                                   
                                                );";
             SqlCommand createStorageTableCommand = new SqlCommand(createStorageTableQuery, conn);
             createStorageTableCommand.ExecuteNonQuery();
+
+            // SQL command to create Storage table
+            string createStorageContentQuery = @"CREATE TABLE StorageContent (
+                                                   PalletID int NOT NULL,
+                                                   FOREIGN KEY (PalletID) REFERENCES Pallet(PalletID),
+                                                   StorageID int NOT NULL,
+                                                   FOREIGN KEY (StorageID) REFERENCES Storage(StorageID)
+                                                   
+                                               );";
+            SqlCommand createStorageContentCommand = new SqlCommand(createStorageContentQuery, conn);
+            createStorageContentCommand.ExecuteNonQuery();
+
+
         }
 
         public void OpenConnection() // Method for opening the connection to the database

@@ -129,75 +129,7 @@ namespace LLL_Grupp_6
                 dbConnection.CloseConnection();
             }
         }
-        public void PrintStorage()  // Hani Ha Hamdo 
-        {
-            try
-            {
-                // Open the database connection
-                dbConnection.OpenConnection();
-
-                // SQL query to retrieve storage details
-                string query = @"
-                    SELECT
-                        s.StorageID,
-                        s.ShelfID1,
-                        p1.PalletType,
-                        COALESCE(CONVERT(VARCHAR(20), p1.ArrivalTime, 120), '') AS ArrivalTime_ShelfID1,
-                        s.ShelfID2,
-                        p2.PalletType,
-                        COALESCE(CONVERT(VARCHAR(20), p2.ArrivalTime, 120), '') AS ArrivalTime_ShelfID2
-                    FROM Storage s
-                    LEFT JOIN Pallet p1 ON s.ShelfID1 = p1.PalletID
-                    LEFT JOIN Pallet p2 ON s.ShelfID2 = p2.PalletID";
-
-                // Execute the SQL query
-                using (var command = new SqlCommand(query, dbConnection.GetConnection()))
-                {
-                    using (var reader = command.ExecuteReader())
-                    {
-                        Console.WriteLine("Storage Details:");
-
-                        // Loop through each row in the result set
-                        while (reader.Read())
-                        {
-                            // Extract values from the current row
-                            int storageId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
-                            int shelfId1 = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
-                            string palletType1 = reader.IsDBNull(2) ? string.Empty : reader.GetString(2);
-                            string arrivalTimeShelfID1 = reader.IsDBNull(3) ? string.Empty : reader.GetString(3);
-                            int shelfId2 = reader.IsDBNull(4) ? 0 : reader.GetInt32(4);
-                            string palletType2 = reader.IsDBNull(5) ? string.Empty : reader.GetString(5);
-                            string arrivalTimeShelfID2 = reader.IsDBNull(6) ? string.Empty : reader.GetString(6);
-
-                            // Set color directly based on PalletType for Shelf 1
-                            Console.ForegroundColor = palletType1.ToLower() == "whole" ? ConsoleColor.Green :
-                                              palletType1.ToLower() == "half" ? ConsoleColor.Yellow : ConsoleColor.Gray;
-                            Console.Write($"StorageID:{storageId}, Shelf 1: {shelfId1}, Type: {palletType1}, ArrivalTime: {arrivalTimeShelfID1}");
-                            Console.ResetColor(); // Reset color to default
-                            Console.Write(", ");
-
-                            // Set color directly based on PalletType for Shelf 2
-                            Console.ForegroundColor = palletType2.ToLower() == "half" ? ConsoleColor.Yellow :
-                                              palletType2.ToLower() == "whole" ? ConsoleColor.Green : ConsoleColor.Gray;
-                            Console.WriteLine($"Shelf 2: {shelfId2}, Type: {palletType2}, ArrivalTime: {arrivalTimeShelfID2}");
-                            Console.ResetColor(); // Reset color to default
-                        }
-                    }
-                }
-            }
-            catch (SqlException e)
-            {
-                // Handle SQL exceptions
-                Console.WriteLine("Error retrieving storage details: " + e.Message);
-            }
-            finally
-            {
-                // Close the database connection in the finally block
-                dbConnection.CloseConnection();
-            }
-        }
-
-
+        
        
     }
 }
