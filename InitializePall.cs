@@ -23,88 +23,88 @@ namespace LLL_Grupp_6    // Hani Haj Hamdo
 
             AddPallet addPallet = new AddPallet();
 
-            // Get the current count of "Half" pallets
-            int currentHalfPalletCount = PalletExist("Half");
+            // Få det aktuella antalet "halva" pallar
+            int currentHalfPalletCount = PalletExist(50);
 
-            // Calculate the number of "Half" pallets to add
+            // Beräkna antalet "halva" pallar att lägga till
             int halfPalletsToAdd = Math.Min(3 - currentHalfPalletCount, 3);
 
-            // Initialize "Half" pallets
+            // Initiera "Halva" pallar
             for (int i = 1; i <= halfPalletsToAdd; i++)
             {
-                InitializePallet(addPallet, currentHalfPalletCount + i, "Half");
+                InitializePallet(addPallet, currentHalfPalletCount + i, 50);
             }
 
-            // Get the current count of "Whole" pallets
-            int currentWholePalletCount = PalletExist("Whole");
+            // Få det aktuella antalet "Hela" pallar
+            int currentWholePalletCount = PalletExist(100);
 
-            // Calculate the number of "Whole" pallets to add
+            // Beräkna antalet "Hela" pallar att lägga till
             int wholePalletsToAdd = Math.Min(3 - currentWholePalletCount, 3);
 
-            // Initialize "Whole" pallets
+            // Initiera "Hela" pallar
             for (int i = 4; i <= 3 + wholePalletsToAdd; i++)
             {
-                InitializePallet(addPallet, currentWholePalletCount + i, "Whole");
+                InitializePallet(addPallet, currentWholePalletCount + i, 100);
             }
 
 
         }
-        void InitializePallet(AddPallet addPallet, int palletID, string palletType)
+        void InitializePallet(AddPallet addPallet, int palletID, int palletType)
         {
             while (PalletIDExists(palletID))
             {
-                palletID++; // Increment the palletID until a unique one is found
+                palletID++; // Öka pall-ID tills ett unikt hittas
             }
             Random random = new Random();
 
-            // Define a range for the random time (adjust as needed)
-            DateTime startDate = new DateTime(2023, 1, 1);
+            // Definiera ett intervall för den slumpmässiga tiden 
+            DateTime startDate = new DateTime(2023, 5, 1);
             DateTime endDate = DateTime.Now;
 
-            // Generate a random time within the specified range
+            // Generera en slumpmässig tid inom det angivna intervallet
             DateTime randomTime = startDate + TimeSpan.FromTicks((long)(random.NextDouble() * (endDate - startDate).Ticks));
 
 
-            // Call the addPallet method to add the pallet to storage
+            // Anropa addPallet-metoden för att lägga till pallen till lagring
             addPallet.addPallet(palletID, palletType, randomTime);
 
         }
-        // Method to check the count of pallets with a specific type
-        int PalletExist(string palletType)
+        // Metod för att kontrollera antalet pallar med en specifik typ
+        int PalletExist(int palletSize)
         {
             int palletCount = 0;
-            // SQL query to count pallets of a specific type
-            string query = "SELECT COUNT(*) FROM Pallet WHERE PalletType = @PalletType";
+            // SQL-fråga för att räkna pallar av en specifik typ
+            string query = "SELECT COUNT(*) FROM Pallet WHERE PalletSize = @PalletSize";
 
 
             using (SqlCommand command = new SqlCommand(query, dbConnection.GetConnection()))
             {
-                // Adding parameter to the SQL command
-                command.Parameters.AddWithValue("@PalletType", palletType);
+                // Lägger till parameter till SQL-kommandot
+                command.Parameters.AddWithValue("@PalletSize", palletSize);
 
-                // Executing the query and retrieving the count
+                // Utför frågan och hämtar räkningen
                 palletCount = (int)command.ExecuteScalar();
             }
 
-            // Returning the count of pallets with the specified type
+            // Returnerar antalet pallar med angiven typ
             return palletCount;
         }
-        // Method to check if a pallet with a specific ID exists
+        // Metod för att kontrollera om en pall med ett specifikt ID finns
         bool PalletIDExists(int palletID)
         {
-            // SQL query to count pallets with a specific ID
+            // SQL-fråga för att räkna pallar med ett specifikt ID
             string query = "SELECT COUNT(*) FROM Pallet WHERE PalletID = @PalletID";
 
-            // Using statement ensures proper resource disposal
+            // Att använda uttalandet säkerställer korrekt resursförfogande
             using (SqlCommand command = new SqlCommand(query, dbConnection.GetConnection()))
             {
-                // Adding parameter to the SQL command
+                // Lägger till parameter till SQL-kommandot
                 command.Parameters.AddWithValue("@PalletID", palletID);
 
-                // Executing the query and retrieving the count
+                // Utför frågan och hämtar räkningen
                 int palletCount = (int)command.ExecuteScalar();
 
-                // Returning whether a pallet with the specified ID exists
+                // Returnerar om en pall med angivet ID finns
                 return palletCount > 0;
             }
         }

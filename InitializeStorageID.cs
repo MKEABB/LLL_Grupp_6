@@ -12,49 +12,51 @@ namespace LLL_Grupp_6   // Hani Haj Hamdo
     {
         private DatabaseConnection dbConnection;
 
-        // Initialize the DatabaseConnection object
+        // Initiera DatabaseConnection-objektet
         public InitializeStorageID()
         {
             dbConnection = new DatabaseConnection();
         }
         public void initializeStorageID()
         {
-            // Open the database connection
+            // Öppna databasanslutningen
             dbConnection.OpenConnection();
 
-            // SQL query to check the existence of records in the "Storage" table
+            // SQL-fråga för att kontrollera förekomsten av poster i "Storage"-tabellen
             string checkExistenceQuery = "SELECT COUNT(*) FROM Storage";
 
-            // Execute the checkExistenceQuery
+            // Kör checkExistenceQuery
             using (SqlCommand checkExistenceCommand = new SqlCommand(checkExistenceQuery, dbConnection.GetConnection()))
             {
-                // Get the count of records in the "Storage" table
+                // Få antalet poster i "Storage"-tabellen
                 int rowCount = Convert.ToInt32(checkExistenceCommand.ExecuteScalar());
 
-                // If there are no records, initialize them
+                // Om det inte finns några poster, initiera dem
                 if (rowCount == 0)
                 {
-                   // Loop through storage IDs from 1 to 20 for initialization
+                    // Gå igenom StorageID:n från 1 till 20 för initiering
                     for (int storageId = 1; storageId <= 20; storageId++)
                     {
-                        // SQL query to insert records into the "Storage" table
-                        string insertQuery = "INSERT INTO Storage (StorageID, ShelfID1, ShelfID2) VALUES (@StorageID, NULL, NULL)";
 
-                        // Execute the insertQuery
+                        // SQL-fråga för att infoga poster i "Storage"-tabellen
+                        string insertQuery = "INSERT INTO Storage (StorageID, Size) VALUES (@StorageID, @Size)";
+
+                        // Kör insertQuery
                         using (SqlCommand insertCommand = new SqlCommand(insertQuery, dbConnection.GetConnection()))
                         {
-                            // Add parameter for StorageID
+                            // Lägg till parameter för StorageID
                             insertCommand.Parameters.AddWithValue("@StorageID", storageId);
-                            // Execute the insertion
+                            insertCommand.Parameters.AddWithValue("@Size", 100);
+                            // Utför infogningen
                             insertCommand.ExecuteNonQuery();
                         }
                     }
-                    // Print success message
+                    // Skriv ut framgångsmeddelande
                     Console.WriteLine("StorageID initialized successfully.");
             }
                 else
             {
-                    // Handle SQL exceptions and print an error message
+                    // Hantera SQL-undantag och skriv ut ett felmeddelande
                     Console.WriteLine("StorageID already exist. No need for initialization.");
             }
         }

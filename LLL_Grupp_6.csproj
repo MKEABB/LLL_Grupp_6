@@ -49,6 +49,7 @@
     <Compile Include="InitializeStorageID.cs" />
     <Compile Include="Palle.cs" />
     <Compile Include="PalletManagment.cs" />
+    <Compile Include="PrintStorage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Storage.cs" />
