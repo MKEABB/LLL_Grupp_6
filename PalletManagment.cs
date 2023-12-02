@@ -19,19 +19,17 @@ namespace LLL_Grupp_6
         {
             dbConnection = new DatabaseConnection();
         }
-        public Pallet RetrievePallet(int palletId)                    // Fetches and displays the information of a specific pallet based on its ID.
+        public void RetrievePallet(int palletId)                    // Fetches and displays the information of a specific pallet based on its ID.
         {
-            Pallet searchedPallet = new Pallet();
-            
             try
             {
                 dbConnection.OpenConnection();
-                string query = "select p.*, s.Size AS StorageSize from pallet p " +
-                               "JOIN" +
+                string query = "select p.*, s.Size, s.StorageID FROM pallet p " +
+                               "JOIN " +
                                "StorageContent sc ON p.PalletID = sc.PalletID " +
-                               "JOIN" +
-                               "Storage s ON sc.StorageID = s.StorageID" +
-                               "where p.PalletID = @PalletID";
+                               "JOIN " +
+                               "Storage s ON sc.StorageID = s.StorageID " +
+                               "WHERE p.PalletID = @PalletID";
 
                 using (SqlCommand command = new SqlCommand(query, dbConnection.GetConnection()))
                 {
@@ -44,20 +42,13 @@ namespace LLL_Grupp_6
                             Console.WriteLine("Pallet ID: " + reader["PalletID"]);  //Skriver ut pallinfon
                             Console.WriteLine("Pallet Size: " + reader["PalletSize"]);
                             Console.WriteLine("Arrival Time: " + reader["ArrivalTime"]);
+                            Console.WriteLine("Storage:");
                             Console.WriteLine("StorageID: " + reader["StorageID"]);
-
-
-                            searchedPallet.PalletID = Convert.ToInt32(reader["PalletID"]);    
-                            searchedPallet.PalletID = Convert.ToInt32(reader["PalletType"]);
-                            searchedPallet.ArrivalTime = reader.GetDateTime(reader.GetOrdinal("ArrivalTime"));
-                            //int tStorageID = Convert.ToInt32(reader["StorageID"]);
-
-                           
+                            Console.WriteLine("StorageSize: " + reader["Size"]);
                         }
                         else
                         {
                             Console.WriteLine("No pallet with ID {0} exists.", palletId);
-                            return null;
                         }
                     }
                 }
@@ -70,7 +61,6 @@ namespace LLL_Grupp_6
             {
                 dbConnection.CloseConnection();
             }
-            return searchedPallet;
         }
 
         public void DeletePallet(int palletId)
