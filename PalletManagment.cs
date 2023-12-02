@@ -42,7 +42,6 @@ namespace LLL_Grupp_6
                             Console.WriteLine("Pallet ID: " + reader["PalletID"]);  //Skriver ut pallinfon
                             Console.WriteLine("Pallet Size: " + reader["PalletSize"]);
                             Console.WriteLine("Arrival Time: " + reader["ArrivalTime"]);
-                            Console.WriteLine("Storage:");
                             Console.WriteLine("StorageID: " + reader["StorageID"]);
                             Console.WriteLine("StorageSize: " + reader["Size"]);
                         }
