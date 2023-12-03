@@ -67,7 +67,7 @@ namespace LLL_Grupp_6
                         Console.Clear();
                         Console.Write("Write PalletID to Move: ");
                         int palletIDtoMove = Convert.ToInt32(Console.ReadLine());
-                        //Palle.Move(palletManagment.RetrievePallet(palletIDtoMove));
+                        palletManagment.RetrievePallet(palletIDtoMove);
                         break;
                     case "4":
                         Console.Clear();

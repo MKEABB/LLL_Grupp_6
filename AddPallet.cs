@@ -7,6 +7,13 @@ using System.Threading.Tasks;
 
 namespace LLL_Grupp_6    //Hani Haj Hamdo 
 {
+    public class Pallet
+    {
+        // Klass som representerar information om en pall
+        public int PalletID { get; set; }       
+        public string PalletType { get; set; }  
+        public DateTime ArrivalTime { get; set; } 
+    }
 
     // Klass som representerar information om lagring
     public class Storage
@@ -15,6 +22,12 @@ namespace LLL_Grupp_6    //Hani Haj Hamdo
         public int Size { get; set; }
     }
 
+    // Klass som representerar förhållandet mellan en pall och lager
+    public class StorageContent
+    {
+        public int PalletID { get; set; }   
+        public int StorageID { get; set; }  
+    }
 
     // Klass ansvarig för att lägga till pallar till lager
     public class AddPallet
