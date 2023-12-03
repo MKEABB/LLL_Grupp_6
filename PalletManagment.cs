@@ -12,8 +12,6 @@ namespace LLL_Grupp_6
     public class PalletManagment
     {
         private DatabaseConnection dbConnection;
-        private const int WholePalletRate = 80; // kr/h
-        private const int HalfPalletRate = 40; // kr/h
 
         public PalletManagment()
         {
@@ -68,20 +66,21 @@ namespace LLL_Grupp_6
             {
                 dbConnection.OpenConnection();
 
-                // Retrieve the pallet info (including ArrivalTime and PalletType) for cost calculation
-                string retrieveQuery = "SELECT PalletType, ArrivalTime FROM Pallet WHERE PalletID = @PalletID";
+                // Retrieve the pallet info (including ArrivalTime and PalletSize) for cost calculation
+                string retrieveQuery = "SELECT PalletSize, ArrivalTime FROM Pallet WHERE PalletID = @PalletID";
                 SqlCommand retrieveCommand = new SqlCommand(retrieveQuery, dbConnection.GetConnection());
                 retrieveCommand.Parameters.AddWithValue("@PalletID", palletId);
+
                 using (SqlDataReader reader = retrieveCommand.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        string palletType = reader["PalletType"].ToString();
+                        int palletSize = Convert.ToInt32(reader["PalletSize"]);
                         DateTime arrivalTime = Convert.ToDateTime(reader["ArrivalTime"]);
 
                         // Calculate the cost
                         TimeSpan duration = DateTime.Now - arrivalTime;
-                        int rate = (palletType == "Whole") ? WholePalletRate : HalfPalletRate;
+                        int rate = palletSize == 100 ? 80 : 40; // 80 kr/h for full pallet, 40 kr/h for half pallet
                         double cost = duration.TotalHours * rate;
 
                         // Output the cost
@@ -94,12 +93,11 @@ namespace LLL_Grupp_6
                     }
                 }
 
-                // Update the Storage table to remove references to the pallet
-                string updateStorageQuery = "UPDATE Storage SET ShelfID1 = NULL WHERE ShelfID1 = @PalletID; " +
-                                            "UPDATE Storage SET ShelfID2 = NULL WHERE ShelfID2 = @PalletID";
-                SqlCommand updateStorageCommand = new SqlCommand(updateStorageQuery, dbConnection.GetConnection());
-                updateStorageCommand.Parameters.AddWithValue("@PalletID", palletId);
-                updateStorageCommand.ExecuteNonQuery();
+                // Update the StorageContent table to remove the reference to the pallet
+                string updateStorageContentQuery = "DELETE FROM StorageContent WHERE PalletID = @PalletID";
+                SqlCommand updateStorageContentCommand = new SqlCommand(updateStorageContentQuery, dbConnection.GetConnection());
+                updateStorageContentCommand.Parameters.AddWithValue("@PalletID", palletId);
+                updateStorageContentCommand.ExecuteNonQuery();
 
                 // Delete the pallet from the Pallet table
                 string deleteQuery = "DELETE FROM Pallet WHERE PalletID = @PalletID";
@@ -118,8 +116,6 @@ namespace LLL_Grupp_6
                 dbConnection.CloseConnection();
             }
         }
-        
-       
     }
 }
 
