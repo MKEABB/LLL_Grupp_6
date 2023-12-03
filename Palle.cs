@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -10,105 +12,127 @@ namespace LLL_Grupp_6
     internal class Palle
     {
 
-        public static void Move(Tuple<int, string, DateTime, int> retrievedPallet)
+
+        public static void Move(int palletId)
         {
-            //Ändra
             string connectionString = @"Data Source=.\SQLEXPRESS; Initial Catalog=Ninja-Astronauts-DB; Integrated Security=true; TrustServerCertificate=true;";
 
-            bool gotCapacity = false;
             int newStorageID = -1;
 
+            int scPalletSize = 0;                                                                                           //Pallvariabler
+            int scStorageID = 0;
+            int storageSize = 0;
 
-            while (newStorageID > 20 || newStorageID < 0)                                       //Om inte den nya pallplatsen är inom 0-20 tar den in ny indata
-            {
-                UserInput.Int($"Move pallet from {retrievedPallet.Item4} to ", ref newStorageID);
+                                                                                                                            //Hämtar infon om pallen i fråga
+            string palletPlacementQ = @"SELECT p.PalletSize, sc.StorageID AS [SC StorageID], sc.PalletID AS[SC PalletID],
+                                    s.Size AS StorageSize
+                                    FROM Pallet p
+                                    JOIN StorageContent sc ON p.PalletID = sc.PalletID
+                                    JOIN Storage s ON sc.StorageID = s.StorageID
+                                    WHERE p.PalletID = @PalletID";
+
+            while (newStorageID < 1 || newStorageID > 20)                                                                   //Ser till att inmatat värde inte är
+            {                                                                                                               //utanför 20
+                Console.WriteLine("New storageID: ");
+                newStorageID = int.Parse(Console.ReadLine());
             }
+                                                                                                                            //Första update ser till att Size
+                                                                                                                            //för den gamla platsen får rätt
+                                                                                                                            //värde och att den nya platsens
+                                                                                                                            //size blir uppdaterad
+            string restoreStorageSizeQ = @"UPDATE Storage                                                                   
+                                         SET Size = Size + @SCPalletSize
+                                         WHERE StorageID = @PreviousStorageID;
+                                         UPDATE Storage
+                                         SET Size = Size - @SCPalletSize
+                                         WHERE StorageID = @NewStorageID;";
+                                                                                                                            //Till sist uppdateras storageContent
+            string updateStorageContentQ = @"UPDATE StorageContent
+                                          SET StorageID = @NewStorageID
+                                          WHERE PalletID = @PalletID;";
 
 
-            if (retrievedPallet.Item2 == "Half")                                                //Palltypen är halv 
+            using (SqlConnection connection = new SqlConnection(connectionString))                                          //Main connection
             {
-                gotCapacity = StorageCheck.GotHalfPalletCapacity(newStorageID);                 //Kollar om sökt StorageID har minst en ledig halvplats.
-
-                if (gotCapacity == true)
+                connection.Open();
+                using (SqlTransaction transaction = connection.BeginTransaction())                                          //Transaction så att inget uppdateras om inte allt går igenom
                 {
-                    // Hani updated the deleteUpdateQuery
-                    string deleteUpdateQuery = @" UPDATE Storage
-                                                  SET
-                                                   ShelfID1 = CASE WHEN ShelfID1 = @PreviousPID THEN NULL ELSE ShelfID1 END,
-                                                   ShelfID2 = CASE WHEN ShelfID2 = @PreviousPID THEN NULL ELSE ShelfID2 END
-                                                  WHERE
-                                                   ShelfID1 = @PreviousPID OR ShelfID2 = @PreviousPID";
-
-                    string moveInsertQuery = "UPDATE Storage " +                                //Ändrar shelfID 1/2 till nytt id beroende på om den är null eller inte. 
-                                             "SET ShelfID1 = CASE WHEN ShelfID1 IS NULL THEN @PalletID ELSE ShelfID1 END, " + //Om den inte är null är värdet kvar 
-                                             "ShelfID2 = CASE WHEN ShelfID1 IS NOT NULL THEN @PalletID ELSE ShelfID2 END " +  //Alltså väljs vilken av de två halvpalls-
-                                             "WHERE StorageID = @StorageID;";                                                 //platserna den ska vara på automatiskt.
-
-                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    try
                     {
-                        connection.Open();
 
-                        // Skriver över med null på tidigare plats
-                        using (SqlCommand deleteCommand = new SqlCommand(deleteUpdateQuery, connection))
+                        // (palletPlacementQ) Pallinfo
+                        using (SqlCommand placementCommand = new SqlCommand(palletPlacementQ, connection, transaction))
                         {
-                            deleteCommand.Parameters.AddWithValue("@PreviousPID", retrievedPallet.Item1);
-                            deleteCommand.ExecuteNonQuery();
+                            placementCommand.Parameters.AddWithValue("@PalletID", palletId);
+
+                            using (SqlDataReader reader = placementCommand.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    scPalletSize = Convert.ToInt32(reader["PalletSize"]);
+                                    scStorageID = Convert.ToInt32(reader["SC StorageID"]);
+                                    storageSize = Convert.ToInt32(reader["StorageSize"]);
+                                }
+                            }
+                        }
+                                                                                                                            //Kollar så att den valda storageplatsen
+                        if (IsAvailable(scStorageID, scPalletSize) == false)                                                //har plats åt den nya pallen
+                        {
+                            throw new Exception("StorageID not available");
                         }
 
-                        // Nya värden
-                        using (SqlCommand moveCommand = new SqlCommand(moveInsertQuery, connection))
+                        // (restoreStorageSizeQ) Återställa Storage>Size                                                    
+                        using (SqlCommand restoreStorageSizeCommand = new SqlCommand(restoreStorageSizeQ, connection, transaction))
                         {
-                            moveCommand.Parameters.AddWithValue("@StorageID", newStorageID);
-                            moveCommand.Parameters.AddWithValue("@PalletID", retrievedPallet.Item1);
-                            moveCommand.ExecuteNonQuery();
+                            restoreStorageSizeCommand.Parameters.AddWithValue("@PalletID", palletId);
+                            restoreStorageSizeCommand.Parameters.AddWithValue("@SCPalletSize", scPalletSize);
+                            restoreStorageSizeCommand.Parameters.AddWithValue("@PreviousStorageID", scStorageID);
+                            restoreStorageSizeCommand.Parameters.AddWithValue("@CurrentStorageSize", storageSize);
+                            restoreStorageSizeCommand.Parameters.AddWithValue("@NewStorageID", newStorageID);
+                            restoreStorageSizeCommand.ExecuteNonQuery();
                         }
 
-                        Console.WriteLine("Pallet moved successfully");
-
+                        // (updateStorageContentQ) uppdatera * StorageContent 
+                        using (SqlCommand updateStorageContentCommand = new SqlCommand(updateStorageContentQ, connection, transaction))
+                        {
+                            updateStorageContentCommand.Parameters.AddWithValue("@PalletID", palletId);
+                            updateStorageContentCommand.Parameters.AddWithValue("@NewStorageID", newStorageID);
+                            updateStorageContentCommand.ExecuteNonQuery();
+                        }
+                        Console.WriteLine("PalletID {0} moved from StorageID {1} to {2}", palletId, scStorageID, newStorageID);
+                        transaction.Commit();
+                    }
+                    catch (Exception x)
+                    {
+                        transaction.Rollback();
+                        Console.WriteLine("ROLLBACK: {0}", x);
                     }
                 }
             }
-            else if (retrievedPallet.Item2 == "Whole")                                          //Inmatad pall är en helpall
+        }
+        private static bool IsAvailable(int newStorageID, int palletSize)//!!!Lånad från Hani men jag har modifierat den lite. 
+        {                                                                                                                   //(AKA jag har gjort den lite sämre)
+            string connectionString = @"Data Source=.\SQLEXPRESS; Initial Catalog=Ninja-Astronauts-DB; Integrated Security=true; TrustServerCertificate=true;";
+            string query = "SELECT 1 FROM Storage WHERE StorageID = @StorageID AND Size >= @Size";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                gotCapacity = StorageCheck.GotFullPalletCapacity(newStorageID);                 //Metoden för att se om de önskade platserna är lediga.
+                connection.Open();
 
-                if (gotCapacity == true)
+                using (SqlCommand queryCommand = new SqlCommand(query, connection))
                 {
-                    string deleteUpdateQuery = "UPDATE Storage " +
-                                               "SET ShelfID1 = NULL, ShelfID2 = NULL " +
-                                               "WHERE ShelfID1 = @PreviousPID OR ShelfID2 = @PreviousPID;";
+                    queryCommand.Parameters.AddWithValue("@StorageID", newStorageID);
+                    queryCommand.Parameters.AddWithValue("@Size", palletSize);
 
-                    string moveInsertQuery = "UPDATE Storage " +                                //Om ShelfID är null ges ShelfID värdet av den sökta pallen
-                                             "SET ShelfID1 = COALESCE(ShelfID1, @PalletID)," +
-                                             "ShelfID2 = COALESCE(ShelfID2, @PalletID)" +
-                                             "WHERE StorageID = @StorageID; ";
-
-
-                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    using (SqlDataReader reader = queryCommand.ExecuteReader())
                     {
-
-                        connection.Open();
-
-                        // Skriver över med null på tidigare platser
-                        using (SqlCommand deleteCommand = new SqlCommand(deleteUpdateQuery, connection))
+                        if (reader.HasRows)
                         {
-                            deleteCommand.Parameters.AddWithValue("@PreviousPID", retrievedPallet.Item1);
-                            deleteCommand.ExecuteNonQuery();
+                            return true;
                         }
-                        //Nya värden
-                        SqlCommand command = new SqlCommand(moveInsertQuery, connection);
-                        command.Parameters.AddWithValue("@StorageID", newStorageID);
-                        command.Parameters.AddWithValue("@PalletID", retrievedPallet.Item1);
-                        SqlDataReader reader = command.ExecuteReader();
+                        return false;
                     }
                 }
-            }
-            else
-            {
-
-                //Lediga helpallsplatser visas
-                // informationen blir inserted
-                // skriv över med null på de gamla platserna 
             }
         }
     }

@@ -28,7 +28,7 @@ namespace LLL_Grupp_6
             {
                 //my menu shows what we can do in the Storage
                 Console.ForegroundColor = ConsoleColor.Blue;
-                Console.WriteLine("** Stroage menu **");
+                Console.WriteLine("** Storage menu **");
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("******************************************");
                 Console.WriteLine("1) Submission of pallets ");
@@ -67,7 +67,7 @@ namespace LLL_Grupp_6
                         Console.Clear();
                         Console.Write("Write PalletID to Move: ");
                         int palletIDtoMove = Convert.ToInt32(Console.ReadLine());
-                        palletManagment.RetrievePallet(palletIDtoMove);
+                        Palle.Move(palletIDtoMove);
                         break;
                     case "4":
                         Console.Clear();
