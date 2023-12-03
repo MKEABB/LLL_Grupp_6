@@ -76,7 +76,7 @@ namespace LLL_Grupp_6
                             }
                         }
                                                                                                                             //Kollar så att den valda storageplatsen
-                        if (IsAvailable(scStorageID, scPalletSize) == false)                                                //har plats åt den nya pallen
+                        if (IsAvailable(newStorageID, scPalletSize) == false)                                                //har plats åt den nya pallen
                         {
                             throw new Exception("StorageID not available");
                         }
